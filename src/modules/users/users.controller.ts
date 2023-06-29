@@ -13,7 +13,7 @@ import { JwtContextType } from 'src/types/jwt-context.type';
 import { ExtractJwtContext } from '../auth/decorators/jwt.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { UsersService } from './users.service';
-import { UpdateUserDTO } from './dto/update-user.dto';
+import { UpdateUserDTO } from './dtos/update-user.dto';
 
 @Controller('/users')
 export class UsersController {
@@ -24,12 +24,12 @@ export class UsersController {
   @UseGuards(new JwtAuthGuard())
   @Get('/me')
   getMe(@ExtractJwtContext() context: JwtContextType) {
-    return this.usersService.findOneById(context.id);
+    return this.usersService.getOneById(context.id);
   }
 
   @Get('/:userId')
   getUser(@Param('userId') userId: string) {
-    return this.usersService.findOneById(userId);
+    return this.usersService.getOneById(userId);
   }
 
   @UseGuards(new JwtAuthGuard())

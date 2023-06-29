@@ -2,7 +2,7 @@ import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
 import { JwtContextType } from 'src/types/jwt-context.type';
 import { AuthService } from './auth.service';
 import { ExtractJwtContext } from './decorators/jwt.decorator';
-import { LoginUserDto, RegisterUserDto } from './dto/auth.dto';
+import { LoginUserDto, RegisterUserDto } from './dtos/auth.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
 
 @Controller('auth')

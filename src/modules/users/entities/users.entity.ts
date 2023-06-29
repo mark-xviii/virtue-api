@@ -1,6 +1,7 @@
+import { VirtuesEntity } from 'src/modules/virtues/entities/virtues.entity';
 import Utils from 'src/utils';
 
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity()
 export class UsersEntity extends Utils.DatabaseEntities.BaseEntityExtended {
@@ -16,4 +17,7 @@ export class UsersEntity extends Utils.DatabaseEntities.BaseEntityExtended {
   @ManyToMany(() => UsersEntity)
   @JoinTable({ name: 'subscriptions_entity' })
   subscriptions: UsersEntity[];
+
+  @OneToMany(() => VirtuesEntity, (virtues) => virtues.user)
+  virtues: VirtuesEntity[];
 }

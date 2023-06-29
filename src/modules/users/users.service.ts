@@ -4,7 +4,7 @@ import { UsersEntity } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import Utils from 'src/utils';
 import { JwtContextType } from 'src/types/jwt-context.type';
-import { UpdateUserDTO } from './dto/update-user.dto';
+import { UpdateUserDTO } from './dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +13,7 @@ export class UsersService {
     private readonly usersRepository: Repository<UsersEntity>,
   ) {}
 
-  async findOneByPublicTag(publicTag: string) {
+  async getOneByPublicTag(publicTag: string) {
     const user = await this.usersRepository.findOne({
       where: { publicTag },
     });
@@ -28,8 +28,11 @@ export class UsersService {
     return user;
   }
 
-  async findOneById(userId: string) {
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
+  async getOneById(userId: string, subscriptions?: boolean) {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      ...(subscriptions && { relations: { subscriptions: true } }),
+    });
 
     if (!user) {
       throw new HttpException(

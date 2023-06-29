@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { UsersEntity } from '../users/entities/users.entity';
-import { LoginUserDto, RegisterUserDto } from './dto/auth.dto';
+import { LoginUserDto, RegisterUserDto } from './dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import Utils from 'src/utils';
 
@@ -15,7 +15,7 @@ export class AuthService {
   async validateUser(publicTag: string, password: string): Promise<any> {
     const passwordHash = Utils.Crypto.hashify(password);
 
-    const user = await this.usersService.findOneByPublicTag(publicTag);
+    const user = await this.usersService.getOneByPublicTag(publicTag);
 
     if (passwordHash === user.passwordHash) {
       const { ...result } = user;
@@ -39,6 +39,7 @@ export class AuthService {
       const payload = {
         id: userToLogin.id,
         publicTag: userToLogin.publicTag,
+        displayName: userToLogin.displayName,
       };
 
       return {

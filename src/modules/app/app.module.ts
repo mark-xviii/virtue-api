@@ -3,6 +3,8 @@ import { UsersModule } from '../users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
 import { UsersEntity } from '../users/entities/users.entity';
+import { VirtuesModule } from '../virtues/virtues.module';
+import { VirtuesEntity } from '../virtues/entities/virtues.entity';
 
 @Module({
   imports: [
@@ -14,10 +16,11 @@ import { UsersEntity } from '../users/entities/users.entity';
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DB,
       synchronize: true,
-      entities: [UsersEntity],
+      entities: [UsersEntity, VirtuesEntity],
     }),
     AuthModule,
     UsersModule,
+    VirtuesModule,
   ],
   controllers: [],
   providers: [],
