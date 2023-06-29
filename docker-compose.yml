@@ -1,0 +1,37 @@
+version: '1'
+
+networks:
+  postgres-network:
+    driver: bridge
+
+volumes:
+  fedora-pg:
+    external: true
+
+services:
+  nestjs-api:
+    # container_name: optional
+    depends_on:
+      postgres:
+        condition:
+          service_completed_successfully
+    env_file:
+      - .env
+    ports:
+      - '9432:8000'
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    networks:
+      - postgres-network
+    # restart: unless-stopped
+
+  postgres:
+    image: postgres:15.1
+    volumes:
+      # This means you are using your local Docker volume
+      - fedora-pg:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - postgres-network
