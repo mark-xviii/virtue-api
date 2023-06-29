@@ -26,10 +26,5 @@ export class LoginUserDto {
   @IsString()
   @MaxLength(64)
   @MinLength(3)
-  displayName: string;
-
-  @IsString()
-  @MaxLength(64)
-  @MinLength(3)
   password: string;
 }

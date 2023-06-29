@@ -4,6 +4,7 @@ import { UsersEntity } from '../users/entities/users.entity';
 import { LoginUserDto, RegisterUserDto } from './dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import Utils from 'src/utils';
+import { JwtContextType } from 'src/types/jwt-context.type';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +31,10 @@ export class AuthService {
     password,
   }: RegisterUserDto): Promise<UsersEntity | undefined> {
     return await this.usersService.createUser(publicTag, displayName, password);
+  }
+
+  async whoAmI(context: JwtContextType) {
+    return context;
   }
 
   async loginUser({ publicTag, password }: LoginUserDto) {
