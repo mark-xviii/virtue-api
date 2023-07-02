@@ -27,9 +27,9 @@ export class UsersController {
     return this.usersService.getOneById(context.id);
   }
 
-  @Get('/:userId')
-  getUser(@Param('userId') userId: string) {
-    return this.usersService.getOneById(userId);
+  @Get('/:publicTag')
+  getUserByPublicTag(@Param('publicTag') publicTag: string) {
+    return this.usersService.getOneByPublicTag(publicTag);
   }
 
   @UseGuards(new JwtAuthGuard())

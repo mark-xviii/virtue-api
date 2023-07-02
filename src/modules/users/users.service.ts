@@ -16,6 +16,7 @@ export class UsersService {
   async getOneByPublicTag(publicTag: string) {
     const user = await this.usersRepository.findOne({
       where: { publicTag },
+      select: { id: true, publicTag: true, displayName: true },
     });
 
     if (!user) {

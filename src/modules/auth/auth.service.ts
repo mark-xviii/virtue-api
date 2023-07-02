@@ -25,12 +25,25 @@ export class AuthService {
     return null;
   }
 
-  async registerUser({
-    publicTag,
-    displayName,
-    password,
-  }: RegisterUserDto): Promise<UsersEntity | undefined> {
-    return await this.usersService.createUser(publicTag, displayName, password);
+  async registerUser({ publicTag, displayName, password }: RegisterUserDto) {
+    const userToRegister = await this.usersService.createUser(
+      publicTag,
+      displayName,
+      password,
+    );
+
+    const payload = {
+      id: userToRegister.id,
+      publicTag: userToRegister.publicTag,
+      displayName: userToRegister.displayName,
+    };
+
+    return {
+      ...payload,
+      accessToken: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+      }),
+    };
   }
 
   async whoAmI(context: JwtContextType) {
@@ -48,6 +61,7 @@ export class AuthService {
       };
 
       return {
+        ...payload,
         accessToken: this.jwtService.sign(payload, {
           secret: process.env.JWT_SECRET,
         }),

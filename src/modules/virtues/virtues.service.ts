@@ -22,6 +22,29 @@ export class VirtuesService {
     });
   }
 
+  async getByPublicTag(context: JwtContextType, publicTag: string) {
+    const currentUser = await this.usersService.getOneById(context.id, true);
+
+    // This one performs check if there is a target user
+    await this.usersService.getOneByPublicTag(publicTag);
+
+    const isSubscribed = !!currentUser.subscriptions.find(
+      (s) => s.publicTag === publicTag,
+    );
+
+    if (!isSubscribed) {
+      throw new HttpException(`Not subscribed!`, HttpStatus.CONFLICT);
+    }
+
+    const virtues = await this.virtuesRepository.find({
+      where: { user: { publicTag } },
+      select: { user: { id: true, publicTag: true, displayName: true } },
+      relations: { user: true },
+    });
+
+    return virtues;
+  }
+
   async getByUserId(context: JwtContextType, userId: string) {
     const currentUser = await this.usersService.getOneById(context.id, true);
 
@@ -87,7 +110,7 @@ export class VirtuesService {
 
     if (!currentVirtue) {
       throw new HttpException(
-        `No virtue found! :: ${virtueId}`,
+        `Virtue not found! :: ${virtueId}`,
         HttpStatus.NOT_FOUND,
       );
     }
