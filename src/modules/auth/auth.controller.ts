@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './guards/jwt.guard';
 export class AuthController {
   constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
+  @UseGuards(new JwtAuthGuard())
   @Get('/who-am-i')
   whoAmI(@ExtractJwtContext() context: JwtContextType) {
     return this.authService.whoAmI(context);

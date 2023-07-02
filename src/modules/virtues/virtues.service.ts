@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { VirtuesEntity } from './entities/virtues.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { JwtContextType } from 'src/types/jwt-context.type';
 import { UsersService } from '../users/users.service';
 import { CreateVirtueDTO } from './dtos/create-virtue.dto';
@@ -22,18 +22,29 @@ export class VirtuesService {
     });
   }
 
+  async getFeed(context: JwtContextType) {
+    const currentUser = await this.usersService.getOneById(context.id, true);
+
+    return await this.virtuesRepository.find({
+      where: { user: { id: In(currentUser.subscriptions.map((s) => s.id)) } },
+      relations: { user: true },
+    });
+  }
+
   async getByPublicTag(context: JwtContextType, publicTag: string) {
     const currentUser = await this.usersService.getOneById(context.id, true);
 
     // This one performs check if there is a target user
     await this.usersService.getOneByPublicTag(publicTag);
 
-    const isSubscribed = !!currentUser.subscriptions.find(
-      (s) => s.publicTag === publicTag,
-    );
+    if (context.id !== currentUser.id) {
+      const isSubscribed = !!currentUser.subscriptions.find(
+        (s) => s.publicTag === publicTag,
+      );
 
-    if (!isSubscribed) {
-      throw new HttpException(`Not subscribed!`, HttpStatus.CONFLICT);
+      if (!isSubscribed) {
+        throw new HttpException(`Not subscribed!`, HttpStatus.CONFLICT);
+      }
     }
 
     const virtues = await this.virtuesRepository.find({

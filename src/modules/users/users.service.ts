@@ -146,6 +146,7 @@ export class UsersService {
         publicTag: publicTag,
         passwordHash: Utils.Crypto.hashify(password),
       },
+      relations: { subscriptions: true, virtues: true },
     });
   }
 }

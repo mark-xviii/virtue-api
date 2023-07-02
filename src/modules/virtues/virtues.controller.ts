@@ -32,6 +32,12 @@ export class VirtuesController {
   }
 
   @UseGuards(new JwtAuthGuard())
+  @Get('/feed')
+  getFeed(@ExtractJwtContext() context: JwtContextType) {
+    return this.virtuesService.getFeed(context);
+  }
+
+  @UseGuards(new JwtAuthGuard())
   @Post('/')
   postVirtue(
     @ExtractJwtContext() context: JwtContextType,
